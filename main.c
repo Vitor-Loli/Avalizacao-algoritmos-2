@@ -4,6 +4,34 @@
 
 #define tam_vetor  15
 
+struct elemento {
+    int info;
+    struct elemento *prox;
+};
+typedef struct elemento Elemento;
+
+Elemento* criar_vetor() {
+    return NULL;
+}
+
+Elemento* inserir_elemento(Elemento *vetor, int info) {
+    Elemento *novo = (Elemento *) malloc(sizeof(Elemento));
+    novo->info = info;
+    novo->prox = vetor;
+    return novo;
+}
+
+Elemento *listar_elementos(Elemento *vetor) {
+    for (vetor; vetor != NULL; vetor = vetor->prox) {
+
+        if (vetor->prox == NULL) {
+            printf("%d", vetor->info);
+        }else {
+            printf("%d - ", vetor->info);
+        }
+    }
+}
+
 void exibir_vetor(int vetor[tam_vetor]) {
     //Imprimir vetor na tela
     for (int i = 0; i < tam_vetor; i++) {
@@ -100,19 +128,20 @@ void insertion_sort(int vetor[tam_vetor]) {
 }
 
 
+
 int main() {
     int opc;
-    int vetor[tam_vetor];
-
-    // Inicializando o gerador de números aleatórios
-    srand(time(NULL));
-
-    // populando o vetor com números entre 0 e 999
-    for (int i = 0; i < tam_vetor; i++) {
-        vetor[i] = rand() % 1000;
-    }
+    Elemento *vetor = criar_vetor();
 
     do {
+        // Inicializando o gerador de números aleatórios
+        srand(time(NULL));
+
+        // populando o vetor com números entre 0 e 999
+        for (int i = 0; i < tam_vetor; i++) {
+            vetor = inserir_elemento(vetor, rand() % 1000);
+        }
+
         printf("Menu\n\n");
         printf("Informe qual método deseja utilizar:\n");
         printf("1. Selection sort\n");
@@ -122,7 +151,7 @@ int main() {
 
         //Exibindo o vetor original
         printf("Vetor original\n");
-        exibir_vetor(vetor);
+        listar_elementos(vetor);
 
         switch (opc) {
             case 1:
