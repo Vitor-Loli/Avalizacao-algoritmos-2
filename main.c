@@ -21,126 +21,123 @@ Elemento* inserir_elemento(Elemento *vetor, int info) {
     return novo;
 }
 
-Elemento *listar_elementos(Elemento *vetor) {
+void listar_elementos(Elemento *vetor) {
     for (vetor; vetor != NULL; vetor = vetor->prox) {
 
         if (vetor->prox == NULL) {
-            printf("%d", vetor->info);
+            printf("%d\n", vetor->info);
         }else {
             printf("%d - ", vetor->info);
         }
     }
 }
 
-void exibir_vetor(int vetor[tam_vetor]) {
-    //Imprimir vetor na tela
-    for (int i = 0; i < tam_vetor; i++) {
-        if (i == tam_vetor - 1) {
-            printf("%d\n\n", vetor[i]);
-        }else {
-            printf("%d - ", vetor[i]);
-        }
-    }
-}
+void selection_sort(Elemento *vetor){
+    //Exibindo o vetor original
+    printf("Vetor original\n");
+    listar_elementos(vetor);
 
-void selection_sort(int vetor[tam_vetor])
-{
     int aux;
-    int vetor_crescente[tam_vetor];
-    int vetor_decrescente[tam_vetor];
-
-    //popupando os vetores auxiliares
-    for (int i = 0; i < tam_vetor; i++) {
-        vetor_crescente[i] = vetor[i];
-        vetor_decrescente[i] = vetor[i];
-    }
 
     //Ordenando crescente
-    for (int i = 0; i < tam_vetor; i++) {
-        for (int j = i + 1; j < tam_vetor; j++) {
-            if (vetor_crescente[i] > vetor_crescente[j]) {
-                aux = vetor_crescente[i];
-                vetor_crescente[i] = vetor_crescente[j];
-                vetor_crescente[j] = aux;
+    for (Elemento *i = vetor; i != NULL; i = i->prox) {
+        for (Elemento *j = i->prox; j != NULL; j = j->prox) {
+            if (i->info > j->info) {
+                aux = i->info;
+                i->info = j->info;
+                j->info = aux;
             }
         }
     }
 
     //Exibindo o vetor na ordem crescente
     printf("Vetor crescente Selection Sort\n");
-    exibir_vetor(vetor_crescente);
+    listar_elementos(vetor);
 
     //Ordenando decrescente
-    for (int i = 0; i < tam_vetor; i++) {
-        for (int j = i + 1; j < tam_vetor; j++) {
-            if (vetor_decrescente[i] < vetor_decrescente[j]) {
-                aux = vetor_decrescente[i];
-                vetor_decrescente[i] = vetor_decrescente[j];
-                vetor_decrescente[j] = aux;
+    for (Elemento *i = vetor; i != NULL; i = i->prox) {
+        for (Elemento *j = i->prox; j != NULL; j = j->prox) {
+            if (i->info < j->info) {
+                aux = i->info;
+                i->info = j->info;
+                j->info = aux;
             }
         }
     }
 
     //Exibindo o vetor na ordem decrescente
     printf("Vetor decrescente Selection Sort\n");
-    exibir_vetor(vetor_decrescente);
+    listar_elementos(vetor);
+
 }
 
-void insertion_sort(int vetor[tam_vetor]) {
+void insertion_sort(Elemento *vetor) {
+    //Exibindo o vetor original
+    printf("Vetor original\n");
+    listar_elementos(vetor);
 
-    int aux;
-    int vetor_crescente[tam_vetor];
-    int vetor_decrescente[tam_vetor];
-
-    // Populando os vetores auxiliares
-    for (int i = 0; i < tam_vetor; i++) {
-        vetor_crescente[i] = vetor[i];
-        vetor_decrescente[i] = vetor[i];
-    }
+    Elemento *ordenado = NULL;
 
     // Ordenando crescente
-    for (int i = 1; i < tam_vetor; i++) {
-        aux = vetor_crescente[i];
-        int j = i - 1;
-        while (j >= 0 && vetor_crescente[j] > aux) {
-            vetor_crescente[j + 1] = vetor_crescente[j];
-            j--;
+    while (vetor != NULL) {
+        Elemento *atual = vetor;
+        vetor = vetor->prox;
+
+        if (ordenado == NULL || atual->info < ordenado->info) {
+            atual->prox = ordenado;
+            ordenado = atual;
+        } else {
+            Elemento *aux = ordenado;
+            while (aux->prox != NULL && aux->prox->info < atual->info) {
+                aux = aux->prox;
+            }
+            atual->prox = aux->prox;
+            aux->prox = atual;
         }
-        vetor_crescente[j + 1] = aux;
     }
 
+
+    // Exibindo o vetor em ordem crescente
     printf("Vetor crescente Insertion Sort\n");
-    exibir_vetor(vetor_crescente);
+    listar_elementos(ordenado);
 
-    // Ordenando decrescente
-    for (int i = 1; i < tam_vetor; i++) {
-        aux = vetor_decrescente[i];
-        int j = i - 1;
-        while (j >= 0 && vetor_decrescente[j] < aux) {
-            vetor_decrescente[j + 1] = vetor_decrescente[j];
-            j--;
+    //Ordenando decrescente
+    vetor = ordenado;
+    ordenado = NULL;
+
+    while (vetor != NULL) {
+        Elemento *atual = vetor;
+        vetor = vetor->prox;
+
+        if (ordenado == NULL || atual->info > ordenado->info) {
+            atual->prox = ordenado;
+            ordenado = atual;
+        } else {
+            Elemento *aux = ordenado;
+            while (aux->prox != NULL && aux->prox->info > atual->info) {
+                aux = aux->prox;
+            }
+            atual->prox = aux->prox;
+            aux->prox = atual;
         }
-        vetor_decrescente[j + 1] = aux;
     }
 
+    // Exibindo o vetor na ordem decrescente
     printf("Vetor decrescente Insertion Sort\n");
-    exibir_vetor(vetor_decrescente);
+    listar_elementos(ordenado);
+
 }
 
 
 
 int main() {
     int opc;
-    Elemento *vetor = criar_vetor();
+
+    // Inicializando o gerador de números aleatórios
+    srand(time(NULL));
+
 
     do {
-        // Inicializando o gerador de números aleatórios
-        srand(time(NULL));
-
-        // populando o vetor com números entre 0 e 999
-        for (int i = 0; i < tam_vetor; i++) {
-            vetor = inserir_elemento(vetor, rand() % 1000);
-        }
 
         printf("Menu\n\n");
         printf("Informe qual método deseja utilizar:\n");
@@ -149,16 +146,25 @@ int main() {
         printf("3. Exit\n");
         scanf("%d", &opc);
 
-        //Exibindo o vetor original
-        printf("Vetor original\n");
-        listar_elementos(vetor);
 
         switch (opc) {
             case 1:
-                selection_sort(vetor);
+                Elemento *vetor_selection = criar_vetor();
+                // populando o vetor com números entre 0 e 999
+                for (int i = 0; i < tam_vetor; i++) {
+                    vetor_selection = inserir_elemento(vetor_selection, rand() % 1000);
+                }
+
+                selection_sort(vetor_selection);
                 break;
             case 2:
-                insertion_sort(vetor);
+                Elemento *vetor_insertion = criar_vetor();
+                // populando o vetor com números entre 0 e 999
+                for (int i = 0; i < tam_vetor; i++) {
+                    vetor_insertion = inserir_elemento(vetor_insertion, rand() % 1000);
+                }
+
+                insertion_sort(vetor_insertion);
                 break;
             case 3:
                 printf("Até Logo!\n");
